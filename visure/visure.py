@@ -45,7 +45,7 @@ class Visure:
     def _process_project_info(self, project_data):
         self.projects = []
         for project in project_data:
-            project_inst = VisureProject.fromData(self, project)
+            project_inst = VisureProject.fromData(self, **project)
             # project_inst._reload()
             self.projects.append(project_inst)
         return self.projects
@@ -58,7 +58,7 @@ class Visure:
     def get_projects(self, deep = False) -> list:
         self.projects = []
         for project in get_projects(self._authoring_url, self._access_token):
-            project_inst = VisureProject.fromData(self, project)
+            project_inst = VisureProject.fromData(self, **project)
             if deep:
                 project_inst.refreshDetails()
             self.projects.append(project_inst)

@@ -13,13 +13,13 @@ if TYPE_CHECKING:
 class VisureProject:
 
     @classmethod
-    def fromData(cls, visure_client : Visure, data : dict):
-        id = data.get("id")
+    def fromData(cls, visure_client : Visure, **kwargs):
+        id = kwargs.get("id")
         if id == None:
-            raise Exception("ID not valid for project")
-        
+            raise Exception("Project ID not valid")
         target = cls(visure_client, id)
-        target.name = data.get("name")
+        for k, v in kwargs.items():
+            setattr(target, k, v)
         return target
 
     def __init__(self, visure_client : Visure, project_id : int):
@@ -48,6 +48,6 @@ class VisureProject:
         self._set_target_project()
         self.specifications = []
         for specification_data in get_specifications(self.visure._authoring_url, self.visure._access_token):
-            target = VisureSpecification.fromData(self.visure, self, specification_data)
+            target = VisureSpecification.fromData(self.visure, self, **specification_data)
             self.specifications.append(target)
         return self.specifications
