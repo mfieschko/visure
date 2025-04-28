@@ -74,8 +74,6 @@ class VisureSpecification(VisureObject):
 
         new_elements = []
         raw_data = create_element_in_specification(self._visure_client._authoring_url, self.id, self._visure_client._access_token, parent_id, asChildren, count)
-        print(raw_data)
-        print(type(raw_data))
 
         for raw_element in raw_data:
             element = VisureElement.fromData(self._visure_client, self._project, **raw_element)

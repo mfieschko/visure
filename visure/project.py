@@ -1,11 +1,12 @@
 from __future__ import annotations
 from pprint import pprint
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict, Union, Optional
 
 import requests
 
 from visure.primatives.REST.project import get_project_info, set_active_project
 from visure.primatives.REST.specification import get_specifications
+from visure.primatives.REST.element import create_relationships
 
 if TYPE_CHECKING:
     from visure.visure import Visure
@@ -53,3 +54,75 @@ class VisureProject:
             target = VisureSpecification.fromData(self.visure, self, **specification_data)
             self.specifications.append(target)
         return self.specifications
+    
+    def createLinks(self, relationships: List[Dict]) -> Dict:
+        """
+        Create multiple relationships between elements in the project.
+        
+        Args:
+            relationships: List of dictionaries with:
+                - source: Source VisureElement or element ID
+                - target: Target VisureElement or element ID
+                - relationship_type: Dictionary with 'id' and 'name' of the relationship type
+                                    (if None, will use the first available relationship type)
+                - is_suspect: Whether the link is suspect (default: False)
+                - reason: Reason for creating the link (optional)
+                - target_project_id: ID of the target project (default: same as source project)
+                
+        Returns:
+            API response
+        """
+        from visure.element import VisureElement
+        
+        # Ensure we're in the correct project context
+        self._set_target_project()
+        
+        # Format the relationships for the API
+        formatted_relationships = []
+        
+        for relationship in relationships:
+            source = relationship.get("source")
+            target = relationship.get("target")
+            relationship_type = relationship.get("relationship_type")
+            is_suspect = relationship.get("is_suspect", False)
+            reason = relationship.get("reason")
+            target_project_id = relationship.get("target_project_id", self.id)
+            
+            if source is None or target is None:
+                raise ValueError("Both source and target must be provided for each relationship")
+            
+            source_id = source.id if isinstance(source, VisureElement) else source
+            target_id = target.id if isinstance(target, VisureElement) else target
+            
+            # If relationship_type is not provided, get available relationship types
+            if relationship_type is None:
+                # Create a temporary element to get available relationships
+                from visure.element import VisureElement
+                temp_element = VisureElement(self.visure, self, source_id)
+                available_relationships = temp_element.getAvailableRelationships(target_id)
+                if not available_relationships:
+                    raise ValueError(f"No available relationship types between elements {source_id} and {target_id}")
+                relationship_type = available_relationships[0]
+            
+            # Create the relationship
+            formatted_rel = {
+                "id": relationship_type["id"],
+                "sourceID": source_id,
+                "targetID": target_id,
+                "isSuspect": is_suspect,
+                "projectID": self.id,
+                "targetProjectID": target_project_id,
+                "motiveName": relationship_type["name"]
+            }
+            
+            if reason:
+                formatted_rel["reason"] = reason
+                
+            formatted_relationships.append(formatted_rel)
+        
+        # Create the relationships
+        return create_relationships(
+            self.visure._authoring_url,
+            formatted_relationships,
+            self.visure._access_token
+        )

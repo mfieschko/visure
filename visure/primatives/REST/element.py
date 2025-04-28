@@ -96,3 +96,56 @@ def set_name(url, element_id : int, jwt_token: str, text : str):
     resp = requests.put(final_url, headers=headers, json=payload)
     resp.raise_for_status()
     # return resp.json()
+
+def get_available_relationships(url, source_id: int, target_id: int, jwt_token: str):
+    """
+    Get available relationship types between two elements.
+    
+    Args:
+        url: Base URL for the Visure API
+        source_id: ID of the source element
+        target_id: ID of the target element
+        jwt_token: Authentication token
+        
+    Returns:
+        List of available relationship types with format:
+        [{"sourceID": int, "targetID": int, "id": int, "name": str}]
+    """
+    final_url = f'{url}/elements/relationship/{source_id}/{target_id}'
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json"
+    }
+    
+    resp = requests.get(final_url, headers=headers)
+    resp.raise_for_status()
+    return resp.json()
+
+def create_relationships(url, relationships: list, jwt_token: str):
+    """
+    Create relationships between elements.
+    
+    Args:
+        url: Base URL for the Visure API
+        relationships: List of relationship dictionaries with:
+            - id: Relationship type ID
+            - sourceID: Source element ID
+            - targetID: Target element ID
+            - isSuspect: Whether the link is suspect
+            - projectID: Source project ID
+            - targetProjectID: Target project ID
+            - motiveName: Name of the relationship type
+        jwt_token: Authentication token
+        
+    Returns:
+        API response
+    """
+    final_url = f'{url}/elements/relationship/create'
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json"
+    }
+    
+    resp = requests.post(final_url, headers=headers, json=relationships)
+    resp.raise_for_status()
+    # return resp.json()

@@ -106,3 +106,16 @@ returns list of acceptable links in the form of:
 
 Actually create the link with
 https://company.visurecloud.com/VisureAuthoring8/api/v1/elements/relationship/create
+
+[
+    {
+    "id": 432,
+    "sourceID": 4033,
+    "targetID": 4034,
+    "isSuspect": false,
+    "projectID": 2,
+    "targetProjectID": 2,
+    "motiveName": "Satisfied by"
+    },
+    ...
+]
