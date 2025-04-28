@@ -18,7 +18,7 @@ class ResponseObject:
         for key, raw in data.items():
             if key in self._parsers:
                 # custom parser
-                parsed = self._parsers[key](raw, visure_client, visure_project)
+                parsed = self._parsers[key](raw, visure_client, visure_project, target)
             else:
                 # default behavior
                 parsed = self._default_parse(raw)

@@ -1,3 +1,4 @@
+import aiohttp
 import requests
 
 def get_projects(url, jwt_token: str) -> dict:
@@ -45,3 +46,17 @@ def get_attribute_types_in_project(url, jwt_token: str):
     resp = requests.get(final_url, headers=headers)
     resp.raise_for_status()
     return resp.json()
+
+# TODO: verify this works
+async def get_attribute_types_in_project_async(url, jwt_token: str):
+    final_url = f'{url}/project/attribute/types'
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json"
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(final_url, headers=headers) as resp:
+            resp.raise_for_status()
+            return await resp.json()
+

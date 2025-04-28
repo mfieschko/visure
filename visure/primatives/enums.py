@@ -14,3 +14,8 @@ class VisureBaseType(Enum):
     TEXT        = "TEXT"
     BOOLEAN     = "BOOLEAN"
     USER        = "USER"
+
+class VisureBaseRequirementsType(Enum):
+    HEADING  = "Heading"
+    ITEM     = "Item"
+    TEXT     = "Text"

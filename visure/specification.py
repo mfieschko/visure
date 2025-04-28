@@ -98,6 +98,6 @@ class VisureSpecification(VisureObject):
         self.attributes = []
         raw_data = get_attributes_in_specification(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
         for raw_attribute in raw_data:
-            attribute = VisureAttribute.fromData(self._visure_client, self._project, **raw_attribute)
+            attribute = VisureAttribute.fromData(self._visure_client, self._project, owner=self, **raw_attribute)
             self.attributes.append(attribute)
         return self.attributes

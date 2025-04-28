@@ -3,17 +3,20 @@
 # get_elements_in_specification
 
 from __future__ import annotations
+import asyncio
 from pprint import pprint
 from typing import TYPE_CHECKING, Dict, List, Union, Optional
 
 from visure.attribute import VisureAttribute
 from visure.primatives.REST.element import (
+    modify_element_attribute,
     set_code, 
     set_description, 
     set_name, 
     get_available_relationships,
     create_relationships
 )
+from visure.primatives.enums import VisureBaseRequirementsType, VisureBaseType
 from visure.utils import ResponseObject
 from visure.primatives.visure_object import VisureObject
 
@@ -36,13 +39,14 @@ class VisureElement(VisureObject):
 
     def __init__(self, visure_client, project, id=None):
         super().__init__(visure_client, project, id)
+        self.attributes = []
 
     def getAttributes(self) -> list[VisureAttribute]:
         from visure.primatives.REST.element import get_element_attributes
         self.attributes = []
         raw_data = get_element_attributes(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
         for raw_attribute in raw_data:
-            attribute = VisureAttribute.fromData(self._visure_client, self._project, **raw_attribute)
+            attribute = VisureAttribute.fromData(self._visure_client, self._project, owner=self, **raw_attribute)
             self.attributes.append(attribute)
         return self.attributes
     
@@ -51,7 +55,7 @@ class VisureElement(VisureObject):
         self.attributes = []
         raw_data = await get_element_attributes_async(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
         for raw_attribute in raw_data:
-            attribute = VisureAttribute.fromData(self._visure_client, self._project, **raw_attribute)
+            attribute = VisureAttribute.fromData(self._visure_client, self._project, owner=self, **raw_attribute)
             self.attributes.append(attribute)
         return self.attributes
     
@@ -177,3 +181,38 @@ class VisureElement(VisureObject):
             relationships,
             self._visure_client._access_token
         )
+    
+    def setType(self, type : Union[VisureBaseRequirementsType, str]):
+        if isinstance(type, VisureBaseRequirementsType):
+            type = type.value
+
+        if len(self.attributes) == 0:
+            asyncio.run(self.getAttributesAsync())
+
+        if len(self._project.attribute_types) == 0:
+            asyncio.run(self._project.getAttributeTypesAsync())
+
+        # Get attribute that holds type
+        type_attribute = next((x for x in self.attributes if x.name == "isRequirement"))
+
+        # Get values to validate against
+        valid_types_raw = type_attribute.getEnumValues()
+        valid_types = [entry['name'] for entry in valid_types_raw]
+
+        if type not in valid_types:
+            raise Exception(f"Type not valid. Valid types: {valid_types}")
+
+        self.modifyAttribute(type_attribute, VisureBaseType.ENUMERATED, False, [type])
+
+    def modifyAttribute(self, attribue : Union[int, VisureAttribute], basetype : Union[VisureBaseType, str], isMultivalued: bool, values: list):
+        type = basetype
+        if isinstance(basetype, VisureBaseType):
+            type = basetype.value
+
+        attribute_id = attribue
+        if isinstance(attribue, VisureAttribute):
+            attribute_id = attribue.id
+        modify_element_attribute(self._visure_client._authoring_url, self._visure_client._access_token, self.id, attribute_id, type, isMultivalued, values)
+
+    def __repr__(self):
+        return f"VisureElement({self.name})"

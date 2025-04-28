@@ -151,7 +151,7 @@ def create_relationships(url, relationships: list, jwt_token: str):
     # return resp.json()
 
 def modify_element_attribute(url, jwt_token: str, element_id: int, attribute_id:int, basetype: str, isMultivalued: bool, values: list):
-    final_url = f'{url}/elements/relationship/create'
+    final_url = f'{url}/element/attribute/values'
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"

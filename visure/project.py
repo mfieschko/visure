@@ -134,7 +134,16 @@ class VisureProject:
         self._set_target_project()
         raw_data = get_attribute_types_in_project(self.visure._authoring_url, self.visure._access_token)
         for raw_attribute in raw_data:
-            attribute = VisureAttribute.fromData(self.visure, self, **raw_attribute)
+            attribute = VisureAttribute.fromData(self.visure, self, owner=self, **raw_attribute)
             self.attribute_types.append(attribute)
         return self.attribute_types
-    
+
+    # TODO: verify this works
+    async def getAttributeTypesAsync(self):
+        from visure.primatives.REST.project import get_attribute_types_in_project_async
+        self.attributes = []
+        raw_data = await get_attribute_types_in_project_async(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
+        for raw_attribute in raw_data:
+            attribute = VisureAttribute.fromData(self._visure_client, self._project, owner=self, **raw_attribute)
+            self.attributes.append(attribute)
+        return self.attributes
