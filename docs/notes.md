@@ -119,3 +119,16 @@ https://company.visurecloud.com/VisureAuthoring8/api/v1/elements/relationship/cr
     },
     ...
 ]
+
+# Modifying attributes
+POST to https://company.visurecloud.com/VisureAuthoring8/api/v1/element/attribute/values
+Payload is 
+{
+  "parentId": 4037, # Item ID
+  "id": 479, # Attribute ID
+  "baseType": "ENUMERATED", # stored in visure\primatives\enums.py, or can be any string for custom type
+  "isMultivalued": false,
+  "values": [
+    "Heading"
+  ]
+}

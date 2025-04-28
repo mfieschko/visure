@@ -5,8 +5,10 @@ import sys
 from types import NoneType
 from typing import TYPE_CHECKING, Union
 
+from visure.attribute import VisureAttribute
 from visure.element import VisureElement
 from visure.primatives.REST.element import create_element_in_specification
+from visure.primatives.REST.specification import get_attributes_in_specification
 from visure.primatives.visure_object import VisureObject
 from visure.utils import ResponseObject
 
@@ -31,7 +33,7 @@ class VisureSpecification(VisureObject):
     def __repr__(self):
         return f'Specification {self.id} ({self.name})'
     
-    def getElements(self, ignoreActiveFilters : bool = True, search : str = None, deep : bool = False):
+    def getElements(self, ignoreActiveFilters : bool = True, search : str = None, deep : bool = False) -> list[VisureElement]:
         """Gets the elements inside the specification
 
         Args:
@@ -91,3 +93,11 @@ class VisureSpecification(VisureObject):
         """
         tasks = [element.getAttributesAsync() for element in self.elements]
         await asyncio.gather(*tasks)
+
+    def getAttributes(self):
+        self.attributes = []
+        raw_data = get_attributes_in_specification(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
+        for raw_attribute in raw_data:
+            attribute = VisureAttribute.fromData(self._visure_client, self._project, **raw_attribute)
+            self.attributes.append(attribute)
+        return self.attributes

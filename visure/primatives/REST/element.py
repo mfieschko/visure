@@ -149,3 +149,21 @@ def create_relationships(url, relationships: list, jwt_token: str):
     resp = requests.post(final_url, headers=headers, json=relationships)
     resp.raise_for_status()
     # return resp.json()
+
+def modify_element_attribute(url, jwt_token: str, element_id: int, attribute_id:int, basetype: str, isMultivalued: bool, values: list):
+    final_url = f'{url}/elements/relationship/create'
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "parentId": element_id, # Item ID
+        "id": attribute_id, # Attribute ID
+        "baseType": basetype, # stored in visure\primatives\enums.py, or can be any string for custom type
+        "isMultivalued": isMultivalued,
+        "values": values
+    }
+    
+    resp = requests.post(final_url, headers=headers, json=payload)
+    resp.raise_for_status()

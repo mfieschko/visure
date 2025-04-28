@@ -37,3 +37,8 @@ class VisureAttribute(VisureObject):
             else:
                 base += f" - {self.values}"
         return base
+    
+    def getEnumValues(self):
+        ''' This only works if project.getAttributeTypes() was already called '''
+        reqtype_type =  next((x for x in self._project.attribute_types if x.name == self.name))
+        return reqtype_type.enumValues

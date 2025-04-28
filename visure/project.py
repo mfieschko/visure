@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, List, Dict, Union, Optional
 
 import requests
 
-from visure.primatives.REST.project import get_project_info, set_active_project
+from visure.attribute import VisureAttribute
+from visure.primatives.REST.project import get_attribute_types_in_project, get_project_info, set_active_project
 from visure.primatives.REST.specification import get_specifications
 from visure.primatives.REST.element import create_relationships
 
@@ -29,6 +30,8 @@ class VisureProject:
         self.id = project_id
         self.name = None
         self.specifications = None
+
+        self.attribute_types = []
 
     def _set_target_project(self, role = None):
         if self.id != self.visure._current_project_id:
@@ -126,3 +129,12 @@ class VisureProject:
             formatted_relationships,
             self.visure._access_token
         )
+
+    def getAttributeTypes(self) -> list[VisureAttribute]:
+        self._set_target_project()
+        raw_data = get_attribute_types_in_project(self.visure._authoring_url, self.visure._access_token)
+        for raw_attribute in raw_data:
+            attribute = VisureAttribute.fromData(self.visure, self, **raw_attribute)
+            self.attribute_types.append(attribute)
+        return self.attribute_types
+    

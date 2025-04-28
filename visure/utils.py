@@ -55,3 +55,11 @@ class ResponseObject:
         # pretty repr so you can inspect it easily
         attrs = ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items())
         return f"<{self.__class__.__name__} {attrs}>"
+
+
+class AttributableList(list):
+    def __init__(self, *args):
+        super().__init__(*args)
+        for arg in args:
+            if hasattr(arg, "name"):
+                setattr(self, arg.name, arg)

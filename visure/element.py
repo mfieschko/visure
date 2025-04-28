@@ -37,11 +37,10 @@ class VisureElement(VisureObject):
     def __init__(self, visure_client, project, id=None):
         super().__init__(visure_client, project, id)
 
-    def getAttributes(self):
+    def getAttributes(self) -> list[VisureAttribute]:
         from visure.primatives.REST.element import get_element_attributes
         self.attributes = []
         raw_data = get_element_attributes(self._visure_client._authoring_url, self.id, self._visure_client._access_token)
-        pprint(raw_data)
         for raw_attribute in raw_data:
             attribute = VisureAttribute.fromData(self._visure_client, self._project, **raw_attribute)
             self.attributes.append(attribute)

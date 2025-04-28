@@ -26,3 +26,17 @@ def get_elements_in_specification(url, spec_id : int, jwt_token: str, ignoreActi
     resp = requests.get(final_url, headers=headers, json=payload)
     resp.raise_for_status()
     return resp.json()
+
+def get_attributes_in_specification(url, spec_id : int, jwt_token: str, includeAttrsRequirements = True):
+    final_url = f'{url}/specification/{spec_id}/attributes'
+    payload = {
+        "specId": spec_id,
+        "includeAttrsRequirements": includeAttrsRequirements
+    }
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json"
+    }
+    resp = requests.get(final_url, headers=headers, json=payload)
+    resp.raise_for_status()
+    return resp.json()
