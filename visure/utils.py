@@ -35,7 +35,7 @@ class ResponseObject:
         - primitives → leave as is
         """
         if isinstance(value, dict):
-            return ResponseObject(value)
+            return ResponseObject(value, None, None)
         elif isinstance(value, list):
             return [self._default_parse(item) for item in value]
         else:

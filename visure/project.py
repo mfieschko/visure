@@ -9,6 +9,7 @@ from visure.primatives.REST.specification import get_specifications
 
 if TYPE_CHECKING:
     from visure.visure import Visure
+    from visure.specification import VisureSpecification
 
 class VisureProject:
 
@@ -28,13 +29,14 @@ class VisureProject:
         self.name = None
         self.specifications = None
 
-    def _set_target_project(self, role = 9):
+    def _set_target_project(self, role = None):
         if self.id != self.visure._current_project_id:
-            try:
-                set_active_project(self.visure._authoring_url, self.id, role, self.visure._access_token) # TODO: Groups are stored in project info, maybe validate against that?
-            except requests.exceptions.HTTPError:
-                # This project may already be selected if this is a 500 server error. # TODO: Detect this properly
-                pass
+            # Fetch the first appropriate role if one is not given
+            if role == None:
+                role = self.groups[0]["id"]
+            
+            set_active_project(self.visure._authoring_url, self.id, role, self.visure._access_token) # TODO: Groups are stored in project info, maybe validate against that?
+            
             self.visure._current_project_id = self.id
 
     def _reload(self):
@@ -43,7 +45,7 @@ class VisureProject:
     def __repr__(self):
         return f"Visure Project {self.id} ({self.name})"
     
-    def getSpecifications(self):
+    def getSpecifications(self) -> list[VisureSpecification]:
         from visure.specification import VisureSpecification
         self._set_target_project()
         self.specifications = []

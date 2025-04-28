@@ -7,7 +7,8 @@ def get_specifications(url, jwt_token: str) -> dict:
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.get(final_url, headers=headers)
+    payload = ""
+    resp = requests.get(final_url, headers=headers, data=payload)
     resp.raise_for_status()
     return resp.json()
 
