@@ -16,6 +16,17 @@ https://url/VisureAuthoring8/api/v1/element/{id}/description
 
 Then checkin
 
+# Handling in-line links to other items
+Add this to the description:
+<a href="#BM_VR_000547_-000001" target="_blank" rel="nofollow noopener noreferrer">SYSREQ-1 (Code)</a>
+Element ID in this case is 547
+---01 is code
+---02 is name
+---03 is description
+
+
+href=\"#BM_VR_000546_-000518\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">546 (Verification Method)</a>
+
 # Getting elements
 It appears that you can get at elements without needing a spec by passing -1 as the spec id
 

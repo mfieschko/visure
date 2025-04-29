@@ -319,5 +319,47 @@ class VisureElement(VisureObject):
             values
         )
 
+    def getInLineLink(self, representation : Union[str, int, VisureAttribute] = "Code"):
+        '''
+        Gets the in-line link representation of this item. Used for global parameters.
+
+        :param representation: Field to use for representation, can be the name of the parameter (Code, Name, Description), the index of the attribute, or the attribute object itself, defaults to "Code"
+        :type representation: Union[str, int, VisureAttribute], optional
+        :raises ValueError: _description_
+        :raises ValueError: _description_
+        :return: _description_
+        :rtype: _type_
+        '''
+        # HREF format is #BM_VR_000547_-000001
+        # What happens if the ID exceeds 6 digits? TODO find out
+        # What does BM_VR_ mean? does it change? TODO find out
+        id_field = f"{self.id:0{6}d}"
+        attribute_index = None
+        attribute_name = None
+
+        if isinstance(representation, VisureAttribute):
+            attribute_index = representation.id
+            attribute_name = representation.name
+        elif isinstance(representation, int):
+            attribute_index = representation
+            attribute_name = self.attributes[attribute_index].name
+        elif isinstance(representation, str):
+            attribute_name = representation
+            match representation:
+                case "Code":
+                    attribute_index = 1
+                case "Name":
+                    attribute_index = 2
+                case "Description":
+                    attribute_index = 3
+                case _:
+                    raise ValueError()
+        else:
+            raise ValueError()
+        
+        attribute_index_field = f"{attribute_index:0{6}d}"
+
+        return f'<a href="#BM_VR_{id_field}_{attribute_index_field}" target="_blank" rel="nofollow noopener noreferrer">{self.id} ({attribute_name})</a>'
+
     def __repr__(self) -> str:
         return f"VisureElement({self.name})"
