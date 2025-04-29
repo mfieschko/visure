@@ -359,8 +359,8 @@ class VisureElement(VisureObject):
             raise ValueError()
         
         attribute_index_field = f"{attribute_index:0{6}d}"
-
-        return f'<a href="#BM_VR_{id_field}_{attribute_index_field}" target="_blank" rel="nofollow noopener noreferrer">{self.id} ({attribute_name})</a>'
+        insertion = "-" if isinstance(representation, str) else "" # default attributes appear to require this negative?
+        return f'<a href="#BM_VR_{id_field}_{insertion}{attribute_index_field}" target="_blank" rel="nofollow noopener noreferrer">{self.id} ({attribute_name})</a>'
 
     def uploadImage(self, filepath : str, linkable_format : bool = False, width : int = 300, css : str = "width: 300px;"):
         '''
