@@ -61,7 +61,7 @@ class VisureElement(VisureObject):
         """
         element = cls(visure_client, visure_project)
         for key, value in kwargs.items():
-            if isinstance(value, Dict):
+            if isinstance(value, Dict) or isinstance(value, list):
                 ResponseObject({key: value}, element._visure_client, element._project, element)
             else:
                 setattr(element, key, value)
@@ -282,9 +282,9 @@ class VisureElement(VisureObject):
         if isinstance(type, VisureBaseRequirementsType):
             type = type.value
         if not self.attributes:
-            asyncio.run(self.getAttributesAsync())
+            self.getAttributes()
         if not self._project.attribute_types:
-            asyncio.run(self._project.getAttributeTypesAsync())
+            self._project.getAttributeTypes()
         type_attr = next((a for a in self.attributes if a.name == "isRequirement"), None)
         if type_attr is None:
             raise Exception("Type attribute 'isRequirement' not found on element.")
