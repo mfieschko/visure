@@ -52,7 +52,6 @@ class ResponseObject:
         return decorator
 
     def __repr__(self):
-        # pretty repr so you can inspect it easily
         attrs = ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items())
         return f"<{self.__class__.__name__} {attrs}>"
 
