@@ -381,6 +381,9 @@ class VisureElement(VisureObject):
             server_resource = f'<img src="{server_resource}" style="{css}" class="fr-fic fr-dib">'
         return server_resource
         
+    def getURL(self):
+        # TODO: Incomplete, needs baseline support and specification
+        return f'{self._visure_client._url}/VisureAuthoring8/project/{self._project.id}/item/{self.id}'
 
     def __repr__(self) -> str:
         return f"VisureElement({self.name})"
