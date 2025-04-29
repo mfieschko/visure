@@ -1,3 +1,5 @@
+import mimetypes
+import os
 import requests
 import aiohttp
 
@@ -167,3 +169,23 @@ def modify_element_attribute(url, jwt_token: str, element_id: int, attribute_id:
     
     resp = requests.post(final_url, headers=headers, json=payload)
     resp.raise_for_status()
+
+
+def upload_image_to_element(url, jwt_token: str, element_id: int, filepath : str):
+    final_url = f'{url}/element/{element_id}/uploadImage'
+    headers = {
+        "Authorization": f"Bearer {jwt_token}"
+    }
+    filename = os.path.basename(filepath)
+    mime_type, encoding = mimetypes.guess_type(filepath)
+    files = {
+        "uploadImage": (
+            filename,
+            open(filepath, "rb"),
+            mime_type       # the MIME type
+        )
+    }
+    
+    resp = requests.post(final_url, headers=headers, files=files)
+    resp.raise_for_status()
+    return resp.json()

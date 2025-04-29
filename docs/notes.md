@@ -27,6 +27,8 @@ Element ID in this case is 547
 
 href=\"#BM_VR_000546_-000518\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">546 (Verification Method)</a>
 
+<a href="#BM_VR_000546_000518" target="_blank" rel="nofollow noopener noreferrer">SYSREQ-6 (Verification Method)</a>
+
 # Getting elements
 It appears that you can get at elements without needing a spec by passing -1 as the spec id
 

@@ -17,7 +17,8 @@ from visure.primatives.REST.element import (
     set_description,
     set_name,
     get_available_relationships,
-    create_relationships
+    create_relationships,
+    upload_image_to_element
 )
 from visure.primatives.enums import VisureBaseRequirementsType, VisureBaseType
 from visure.utils import ResponseObject
@@ -360,6 +361,26 @@ class VisureElement(VisureObject):
         attribute_index_field = f"{attribute_index:0{6}d}"
 
         return f'<a href="#BM_VR_{id_field}_{attribute_index_field}" target="_blank" rel="nofollow noopener noreferrer">{self.id} ({attribute_name})</a>'
+
+    def uploadImage(self, filepath : str, linkable_format : bool = False, width : int = 300, css : str = "width: 300px;"):
+        '''
+        Upload an image to an element. Optionally returns HTML formatting for immediate use in descriptions.
+
+        :param filepath: The file to upload
+        :type filepath: str
+        :param linkable_format: Whether to return just the url or the html, defaults to False
+        :type linkable_format: bool, optional
+        :return: returns either the resource url or html to be used in rich text
+        :rtype: str
+        '''
+        server_resource = upload_image_to_element(self._visure_client._authoring_url,
+            self._visure_client._access_token,
+            self.id,
+            filepath)["link"]
+        if linkable_format:
+            server_resource = f'<img src="{server_resource}" style="{css}" class="fr-fic fr-dib">'
+        return server_resource
+        
 
     def __repr__(self) -> str:
         return f"VisureElement({self.name})"
