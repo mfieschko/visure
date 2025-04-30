@@ -11,8 +11,8 @@ import atexit
 from pprint import pprint
 from visure.primatives.REST.auth import authenticate, logout
 from visure.primatives.REST.project import get_project_info, get_projects
+from visure import primatives
 from visure.project import VisureProject
-
 
 class Visure:
     """
@@ -27,7 +27,8 @@ class Visure:
         url: str,
         username: str,
         password: str,
-        auto_close_sessions: bool = True
+        auto_close_sessions: bool = True,
+        bypass_ssl : bool = False
     ):
         """
         Initialize and authenticate a Visure client.
@@ -42,6 +43,7 @@ class Visure:
         self._authoring_url = f'{url}/visureauthoring8/api/v1'
         self._username = username
         self._password = password
+        primatives._do_verify = not bypass_ssl
 
         self._current_project_id: int | None = None
         self._authenticated: bool = False

@@ -3,6 +3,8 @@ import os
 import requests
 import aiohttp
 
+from visure import primatives
+
 def get_element_attributes(url, element_id : int, jwt_token: str):
     final_url = f'{url}/specification/element/{element_id}/attributes'
     headers = {
@@ -10,7 +12,7 @@ def get_element_attributes(url, element_id : int, jwt_token: str):
         "Content-Type": "application/json"
     }
 
-    resp = requests.get(final_url, headers=headers)
+    resp = requests.get(final_url, headers=headers, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -22,7 +24,7 @@ async def get_element_attributes_async(url, element_id : int, jwt_token: str):
     }
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(final_url, headers=headers) as resp:
+        async with session.get(final_url, headers=headers, verify=primatives._do_verify) as resp:
             resp.raise_for_status()
             return await resp.json()
 
@@ -41,7 +43,7 @@ def create_element_in_specification(url, spec_id : int, jwt_token: str, parent_i
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.post(final_url, headers=headers, json=payload)
+    resp = requests.post(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -54,7 +56,7 @@ def get_description(url, element_id : int, jwt_token: str, parsed : bool = True)
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.get(final_url, headers=headers, json=payload)
+    resp = requests.get(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -67,7 +69,7 @@ def set_description(url, element_id : int, jwt_token: str, text : str):
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.post(final_url, headers=headers, json=payload)
+    resp = requests.post(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     # return resp.json()
 
@@ -81,7 +83,7 @@ def set_code(url, element_id : int, jwt_token: str, text : str):
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.put(final_url, headers=headers, json=payload)
+    resp = requests.put(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     # return resp.json()
 
@@ -95,7 +97,7 @@ def set_name(url, element_id : int, jwt_token: str, text : str):
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.put(final_url, headers=headers, json=payload)
+    resp = requests.put(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     # return resp.json()
 
@@ -119,7 +121,7 @@ def get_available_relationships(url, source_id: int, target_id: int, jwt_token: 
         "Content-Type": "application/json"
     }
     
-    resp = requests.get(final_url, headers=headers)
+    resp = requests.get(final_url, headers=headers, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -148,7 +150,7 @@ def create_relationships(url, relationships: list, jwt_token: str):
         "Content-Type": "application/json"
     }
     
-    resp = requests.post(final_url, headers=headers, json=relationships)
+    resp = requests.post(final_url, headers=headers, json=relationships, verify=primatives._do_verify)
     resp.raise_for_status()
     # return resp.json()
 
@@ -167,7 +169,7 @@ def modify_element_attribute(url, jwt_token: str, element_id: int, attribute_id:
         "values": values
     }
     
-    resp = requests.post(final_url, headers=headers, json=payload)
+    resp = requests.post(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
 
 
@@ -186,6 +188,6 @@ def upload_image_to_element(url, jwt_token: str, element_id: int, filepath : str
         )
     }
     
-    resp = requests.post(final_url, headers=headers, files=files)
+    resp = requests.post(final_url, headers=headers, files=files, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()

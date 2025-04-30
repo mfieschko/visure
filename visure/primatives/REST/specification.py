@@ -1,5 +1,6 @@
 import requests
 
+from visure import primatives
 
 def get_specifications(url, jwt_token: str) -> dict:
     final_url = f'{url}/specification/hierarchy/tolist'
@@ -8,7 +9,7 @@ def get_specifications(url, jwt_token: str) -> dict:
         "Content-Type": "application/json"
     }
     payload = ""
-    resp = requests.get(final_url, headers=headers, data=payload)
+    resp = requests.get(final_url, headers=headers, data=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -23,7 +24,7 @@ def get_elements_in_specification(url, spec_id : int, jwt_token: str, ignoreActi
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.get(final_url, headers=headers, json=payload)
+    resp = requests.get(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()
 
@@ -37,6 +38,6 @@ def get_attributes_in_specification(url, spec_id : int, jwt_token: str, includeA
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.get(final_url, headers=headers, json=payload)
+    resp = requests.get(final_url, headers=headers, json=payload, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp.json()

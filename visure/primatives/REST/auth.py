@@ -1,5 +1,7 @@
 import requests
 
+from visure import primatives
+
 def authenticate(url, username, password, licensetype = "AUTHORING") -> dict:
     final_url = f'{url}/authenticate'
     payload = {
@@ -9,7 +11,7 @@ def authenticate(url, username, password, licensetype = "AUTHORING") -> dict:
     }
     headers = {"Content-Type": "application/json"}
 
-    response = requests.request("POST", final_url, json=payload, headers=headers, params={"":""}).json()
+    response = requests.request("POST", final_url, json=payload, headers=headers, params={"":""}, verify=primatives._do_verify).json()
     return response
 
 def token_refresh(url, refreshToken):
@@ -19,7 +21,7 @@ def token_refresh(url, refreshToken):
     }
     headers = {"Content-Type": "application/json"}
 
-    response = requests.request("POST", final_url, json=payload, headers=headers, params={"":""}).json()
+    response = requests.request("POST", final_url, json=payload, headers=headers, params={"":""}, verify=primatives._do_verify).json()
     return response
 
 def logout(url: str, jwt_token: str) -> dict:
@@ -28,6 +30,6 @@ def logout(url: str, jwt_token: str) -> dict:
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    resp = requests.post(final_url, headers=headers)
+    resp = requests.post(final_url, headers=headers, verify=primatives._do_verify)
     resp.raise_for_status()
     return resp

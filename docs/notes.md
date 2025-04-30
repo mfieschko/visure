@@ -108,6 +108,64 @@ If the particular id is known
   ]
 }
 
+# Creating attributes
+
+The UI calls the following to list all attributes:
+GET https://company.visurecloud.com/VisureAuthoring8/api/v1/specification/-1/attributes?includeAttrsRequirements=false
+Has the following query: includeAttrsRequirements: false
+
+To make it apply to everything in the project, do:
+POST https://company.visurecloud.com/VisureAuthoring8/api/v1/project/attribute
+with payload:
+{
+    "baseType": 5, // Text in this case
+    "name": "Test Attrbiute",
+    "partitionId": 4, // unknown how to get?
+    "defaultValues": [
+        null
+    ],
+    "isMandatory": false,
+    "isMultivalued": false,
+    "scope": "MaskREQUIREMENT",
+    "enumValues": [],
+    "scopeSpecifications": []
+}
+
+For items in specific documents:
+POST https://company.visurecloud.com/VisureAuthoring8/api/v1/project/attribute
+With payload:
+{
+    "baseType": 2,
+    "name": "Test Attrbiute 2",
+    "partitionId": 4,
+    "defaultValues": [
+        null
+    ],
+    "isMandatory": false,
+    "isMultivalued": false,
+    "scope": "MaskNULL", // Notice the difference against the one above
+    "enumValues": [],
+    "scopeSpecifications": [
+        476 // Specs to apply to
+    ]
+}
+
+For documents themselves:
+POST https://company.visurecloud.com/VisureAuthoring8/api/v1/project/attribute
+{
+    "baseType": 6,
+    "name": "Doc attrbiute test",
+    "partitionId": 4,
+    "defaultValues": [
+        "False"
+    ],
+    "isMandatory": false,
+    "isMultivalued": false,
+    "scope": "MaskBLOCK", // Notice the difference
+    "enumValues": [],
+    "scopeSpecifications": [] // Applies to all specs I guess?
+}
+
 # Linking
 endpoint is 
 https://company.visurecloud.com/VisureAuthoring8/api/v1/elements/relationship/{first item}/{second item}
